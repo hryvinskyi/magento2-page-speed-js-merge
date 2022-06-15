@@ -7,4 +7,9 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Hryvinskyi\PageSpeedJsMerge\Api\ConfigInterface" type="Hryvinskyi\PageSpeedJsMerge\Model\Config"/>
+    <type name="Magento\Deploy\Model\Mode">
+        <plugin name="clear_pagespeed_cache"
+                type="Hryvinskyi\PageSpeedJsMerge\Plugin\ClearCache"
+                sortOrder="10"/>
+    </type>
 </config>

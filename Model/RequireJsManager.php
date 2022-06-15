@@ -6,6 +6,7 @@
 
 namespace Hryvinskyi\PageSpeedJsMerge\Model;
 
+use Hryvinskyi\Base\Helper\Json;
 use Hryvinskyi\PageSpeedApi\Api\Finder\JsInterface as JsFinderInterface;
 use Hryvinskyi\PageSpeedApi\Api\Finder\Result\TagInterface;
 use Hryvinskyi\PageSpeedApi\Api\GetFileContentByUrlInterface;
@@ -251,7 +252,7 @@ class RequireJsManager
             'text' => $this->getInlineConfig($routeKey, '.html'),
         ];
 
-        return "require.config({config:" . \Zend_Json::encode($config) . "});" .
+        return "require.config({config:" . Json::encode($config) . "});" .
             "require.config({bundles:{'mage/requirejs/static':['jsbuild','buildTools','text','statistician']}," .
             "deps:['jsbuild']});";
     }
