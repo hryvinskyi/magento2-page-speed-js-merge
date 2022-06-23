@@ -22,6 +22,7 @@ class JsList extends Zend_Cache
     private DirectoryList $directoryList;
     private array $frontendOptions;
     private array $backendOptions;
+    private string $cacheDir;
 
     /**
      * @param DirectoryList $directoryList
@@ -34,14 +35,16 @@ class JsList extends Zend_Cache
         DirectoryList $directoryList,
         File $file,
         array $frontendOptions = [],
-        array $backendOptions = []
+        array $backendOptions = [],
+        string $cacheDir = '/var/pagespeed_cache'
     ) {
         $this->frontendOptions = $frontendOptions;
         $this->backendOptions = $backendOptions;
         $this->directoryList = $directoryList;
-        $directoryPath = $this->directoryList->getRoot() . '/var/pagespeed_cache';
-        if (!$file->isDirectory($directoryPath)) {
-            $file->createDirectory($directoryPath);
+        $this->cacheDir = $this->directoryList->getRoot() . $cacheDir;
+
+        if (!$file->isDirectory($this->cacheDir)) {
+            $file->createDirectory($this->cacheDir);
         }
     }
 
@@ -58,7 +61,7 @@ class JsList extends Zend_Cache
      */
     public function getBackendOptions(): array
     {
-        return array_merge(['cache_dir' => $this->directoryList->getRoot() . '/var/pagespeed_cache'], $this->backendOptions);
+        return array_merge(['cache_dir' => $this->cacheDir], $this->backendOptions);
     }
 
     /**
@@ -67,11 +70,6 @@ class JsList extends Zend_Cache
      */
     public function getCache(): Zend_Cache_Core
     {
-        return self::factory(
-            'Core',
-            'File',
-            $this->getFrontendOptions(),
-            $this->getBackendOptions()
-        );
+        return self::factory('Core', 'File', $this->getFrontendOptions(), $this->getBackendOptions());
     }
 }
