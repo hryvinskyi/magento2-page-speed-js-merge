@@ -227,9 +227,7 @@ class RequireJsManager
                 }
             }
 
-            if (trim((string)$content) !== '') {
-                $config[$key] = $content;
-            }
+            $config[$key] = $content;
         }
 
         if (array_key_exists(self::LIB_JS_BUILD_SCRIPT, $config)) {
