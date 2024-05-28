@@ -117,7 +117,7 @@ class RequireJsManager
     public function saveUrlList(array $list, string $routeKey): bool
     {
         return $this->jsListCache->save(
-            \Zend_Json::encode(array_unique($list)),
+            Json::encode(array_unique($list)),
             self::CACHE_KEY_PREFIX . $routeKey,
             [CacheInterface::CACHE_TAG],
             null
@@ -143,8 +143,8 @@ class RequireJsManager
         }
 
         try {
-            $result = \Zend_Json::decode($data);
-        } catch (\Zend_Json_Exception $e) {
+            $result = Json::decode($data);
+        } catch (\Exception $e) {
             return [];
         }
 
