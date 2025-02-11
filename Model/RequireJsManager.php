@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2022. All rights reserved.
+ * Copyright (c) 2025. All rights reserved.
  * @author: Volodymyr Hryvinskyi <mailto:volodymyr@hryvinskyi.com>
  */
 
@@ -117,7 +117,7 @@ class RequireJsManager
     public function saveUrlList(array $list, string $routeKey): bool
     {
         return $this->jsListCache->save(
-            Json::encode(array_unique($list)),
+            \Zend_Json::encode(array_unique($list)),
             self::CACHE_KEY_PREFIX . $routeKey,
             [CacheInterface::CACHE_TAG],
             null
@@ -143,8 +143,8 @@ class RequireJsManager
         }
 
         try {
-            $result = Json::decode($data);
-        } catch (\Exception $e) {
+            $result = \Zend_Json::decode($data);
+        } catch (\Zend_Json_Exception $e) {
             return [];
         }
 
@@ -227,7 +227,9 @@ class RequireJsManager
                 }
             }
 
-            $config[$key] = $content;
+            if (trim((string)$content) !== '') {
+                $config[$key] = $content;
+            }
         }
 
         if (array_key_exists(self::LIB_JS_BUILD_SCRIPT, $config)) {
@@ -264,16 +266,17 @@ class RequireJsManager
     public function processWithResponseHttp(ResponseHttp $response): void
     {
         $header = $response->getHeader('X-Magento-Tags');
-        $pageCacheTagList = '';
+        $pageCacheTagList = $this->context->getUrlBuilder()->getCurrentUrl();
         if (is_array($header) || $header instanceof \ArrayIterator) {
             $list = [];
             foreach ($header as $value) {
                 $list[] = $value->getFieldValue();
             }
-            $pageCacheTagList = implode(',', $list);
+            $pageCacheTagList .= ',' . implode(',', $list);
         } elseif ($header) {
-            $pageCacheTagList = $header->getFieldValue();
+            $pageCacheTagList .= ',' . $header->getFieldValue();
         }
+
         $html = $response->getBody();
         $tagsList = $this->jsFinder->findInline($html);
         $replaceData = [];
