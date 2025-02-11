@@ -191,7 +191,11 @@ class RequireJsManager
             return [];
         }
 
-        $baseUrl = array_shift($urlList);
+        // Get base URL theme
+        $baseUrl = $this->context->getAssetRepository()->getUrlWithParams('/', ['_secure' => $this->context->getRequest()->isSecure()]);
+        $baseUrl = rtrim($baseUrl, '/');
+        $baseUrl .= '/';
+
         $excludeAnchorList = $this->config->getExcludeAnchors();
         $config = [];
         foreach ($urlList as $url) {
